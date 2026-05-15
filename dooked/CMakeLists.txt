@@ -63,6 +63,7 @@ message("${PROJECT_NAME}: CURR BIN DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Source Files
 set(SRC_FILES
+    ./source/checks/regex_checks.cpp
     ./source/dns/dns.cpp
     ./source/dns/dns_resolver.cpp
     ./source/http/resolver.cpp
@@ -80,6 +81,7 @@ source_group("Sources" FILES ${SRC_FILES})
 
 # Header Files
 set(HEADERS_FILES
+    ./include/checks/regex_checks.hpp
     ./include/dns/dns.hpp
     ./include/dns/dns_resolver.hpp
     ./include/http/resolver.hpp
@@ -102,6 +104,15 @@ source_group("Headers" FILES ${HEADERS_FILES})
 add_executable(${PROJECT_NAME} 
    ${SRC_FILES} ${HEADERS_FILES}
 )
+
+option(DOOKED_BUILD_TESTS "Build dooked test targets" OFF)
+if(DOOKED_BUILD_TESTS)
+   add_executable(regex_checks_test
+      ./test/regex_checks_test.cpp
+      ./source/checks/regex_checks.cpp
+      ./source/utils/constants.cpp
+   )
+endif()
 
 if(NOT MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3")

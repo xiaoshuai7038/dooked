@@ -9,6 +9,17 @@ extern bool no_bytes_count;
 extern bool silent;
 
 namespace dooked {
+namespace {
+
+std::string response_body_for_checks(std::string const &body) {
+  constexpr std::size_t max_body_bytes = 64 * 1024;
+  if (body.size() <= max_body_bytes) {
+    return body;
+  }
+  return body.substr(0, max_body_bytes);
+}
+
+} // namespace
 
 http_request_handler_t::http_request_handler_t(net::io_context &io_context,
                                                std::string domain_name)
@@ -134,7 +145,7 @@ void http_request_handler_t::on_data_received(
   }
   auto const http_status_code = response_->result_int();
   int const status_code_simple = http_status_code / 100;
-  std::string response_string{};
+  std::string response_string{response_body_for_checks(response_->body())};
 
   if (status_code_simple == 2) {
     response_int = response_type_e::ok;
@@ -360,7 +371,7 @@ void https_request_handler_t::on_data_received(
   }
   int const status_code = response_->result_int();
   int const status_code_simple = status_code / 100;
-  std::string response_string{};
+  std::string response_string{response_body_for_checks(response_->body())};
 
   if (status_code_simple == 2) {
     response_int = response_type_e::ok;
