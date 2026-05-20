@@ -5,7 +5,10 @@ namespace dooked {
 void to_json(json &j, probe_result_t const &record) {
   j = json{{"ttl", record.ttl},
            {"type", dns_record_type_to_str(record.type)},
-           {"info", record.rdata}};
+           {"info", record.rdata},
+           {"first_seen", record.first_seen},
+           {"last_seen", record.last_seen},
+           {"seen", record.seen}};
 }
 
 bool is_text_file(std::string const &file_extension) {
